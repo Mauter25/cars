@@ -1,0 +1,96 @@
+class Carbase:
+    def __init__(self, car_type, brand, photo_le_name, carrying):
+        self.car_type = car_type
+        self.brand = brand
+        self.photo_le_name = photo_le_name
+        self.carrying = carrying
+
+    def get_photo_le_ext(self):
+        punkt = self.photo_le_name.split('.')[-1]
+        if punkt == '':
+            return None
+        else:
+            return '.' + punkt
+
+
+class Car(Carbase):
+    def __init__(self, car_type, brand, photo_le_name, carrying, passenger_seats_count):
+        self.car_type = car_type
+        self.brand = brand
+        self.photo_le_na_me = photo_le_name
+        self.carrying = carrying
+        self.passenger_seats_count = passenger_seats_count
+
+
+class Truck(Carbase):
+    def __init__(self, car_type, brand, photo_le_name, carrying, body_whl):
+        self.car_type = car_type
+        self.brand = brand
+        self.photo_le_na_me = photo_le_name
+        self.carrying = carrying
+        if body_whl == '' or None:
+            self.body_width = 0
+            self.body_height = 0
+            self.body_length = 0
+        self.body_whl = body_whl.split('x')
+        body_length, body_width, body_height = self.body_whl[0], self.body_whl[1], self.body_whl[2]
+        self.body_length = body_length
+        self.body_height = body_height
+        self.body_width = body_width
+
+    def get_body_volume(self):
+        return float(self.body_width * self.body_height * self.body_length)
+
+
+class Specmachine(Carbase):
+    def __init__(self, car_type, brand, photo_le_name, carrying, extra):
+        self.car_type = car_type
+        self.brand = brand
+        self.photo_le_na_me = photo_le_name
+        self.carrying = carrying
+        self.extra = extra
+
+
+def get_car_list(filename):
+    car_list = []
+    second_car_list = []
+    with open(filename, 'r') as k:
+        for i in k:
+            if i.count(';') == 6:
+                second_car_list.append(list(map(str, i.split(';'))))
+
+    for i in range(len(second_car_list)):
+        type_list = ['car', 'truck', 'spec_machine']
+        if second_car_list[i][0] in type_list:
+            if second_car_list[i][0] == type_list[0]:
+                car_type = second_car_list[i][0]
+                brand = second_car_list[i][1]
+                passenger_seats_count = second_car_list[i][2]
+                photo_le_name = second_car_list[i][3]
+                carrying = second_car_list[i][5]
+                car_list.append(Car(car_type, brand, passenger_seats_count, photo_le_name, carrying))
+
+            elif second_car_list[i][0] == type_list[1]:
+                car_type = second_car_list[i][0]
+                brand = second_car_list[i][1]
+                photo_le_name = second_car_list[i][3]
+                body_whl = second_car_list[i][4]
+                carrying = second_car_list[i][5]
+                car_list.append(Truck(car_type, brand, photo_le_name, body_whl, carrying))
+
+            elif second_car_list[i][0] == type_list[2]:
+                car_type = second_car_list[i][0]
+                brand = second_car_list[i][1]
+                photo_le_name = second_car_list[i][3]
+                carrying = second_car_list[i][5]
+                extra = second_car_list[i][6]
+                car_list.append(Specmachine(car_type, brand, photo_le_name, carrying, extra))
+
+    return car_list
+
+
+def main():
+    print(get_car_list('solution.txt'))
+
+if __name__ == '__main__':
+    main()
